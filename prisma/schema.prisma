@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum State {
+  AL
+  AK
+  AZ
+  AR
+  CA
+  CO
+  CT
+  DE
+  FL
+  GA
+  HI
+  ID
+  IL
+  IN
+  IA
+  KS
+  KY
+  LA
+  ME
+  MD
+  MA
+  MI
+  MN
+  MS
+  MO
+  MT
+  NE
+  NV
+  NH
+  NJ
+  NM
+  NY
+  NC
+  ND
+  OH
+  OK
+  OR
+  PA
+  RI
+  SC
+  SD
+  TN
+  TX
+  UT
+  VT
+  VA
+  WA
+  WV
+  WI
+  WY
+}
+
+enum Status {
+  incomplete
+  complete
+}
+
+enum Role {
+  BASIC
+  TENANT
+  ADMIN
+  UTILITY
+}
+
+model City {
+  id      Int       @id @default(autoincrement())
+  name    String
+  state   State
+  address Address[]
+
+  @@unique([name, state])
+}
+
+model Address {
+  id           Int        @id @default(autoincrement())
+  cityId       Int
+  streetName   String
+  streetNumber String
+  zipCode      String
+  City         City       @relation(fields: [cityId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  property     Property[]
+
+  @@unique([cityId, zipCode, streetName, streetNumber])
+}
+
+model Property {
+  id        Int      @id @default(autoincrement())
+  type      String
+  name      String?
+  image     String?
+  addressId Int
+  address   Address  @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  rental    Rental[]
+}
+
+model Rental {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(255)
+  aptNum      String   @db.VarChar(100)
+  price       Int
+  description String
+  image       String
+  propertyId  Int
+  userId      Int?
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_property_")
+  user        User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ticket      Ticket[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Ticket {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  status      Status
+  userId      Int
+  rentalId    Int
+  rental      Rental   @relation(fields: [rentalId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user        User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  name          String?
+  phone         String?   @unique @db.VarChar(30)
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(BASIC)
+  rental        Rental[]
+  ticket        Ticket[]
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model Account {
+  id                Int     @id @default(autoincrement())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
