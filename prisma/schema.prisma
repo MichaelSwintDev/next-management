@@ -79,6 +79,7 @@ model City {
   address Address[]
 
   @@unique([name, state])
+  @@map("city")
 }
 
 model Address {
@@ -91,6 +92,7 @@ model Address {
   property     Property[]
 
   @@unique([cityId, zipCode, streetName, streetNumber])
+  @@map("address")
 }
 
 model Property {
@@ -101,6 +103,7 @@ model Property {
   addressId Int
   address   Address  @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   rental    Rental[]
+  @@map("property")
 }
 
 model Rental {
@@ -117,6 +120,7 @@ model Rental {
   ticket      Ticket[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  @@map("rental")
 }
 
 model Ticket {
@@ -130,6 +134,7 @@ model Ticket {
   user        User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  @@map("ticket")
 }
 
 model User {
@@ -144,6 +149,7 @@ model User {
   ticket        Ticket[]
   accounts      Account[]
   sessions      Session[]
+  @@map("user")
 }
 
 model Account {
@@ -163,6 +169,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@map("account")
 }
 
 model Session {
@@ -171,6 +178,7 @@ model Session {
   userId       Int
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("session")
 }
 
 model VerificationToken {
@@ -179,4 +187,5 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@map("verificationtoken")
 }

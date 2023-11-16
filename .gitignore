@@ -40,3 +40,7 @@ next-env.d.ts
 
 # ide
 .idea/
+.vscode/
+
+#sqlTools
+*.session.sql
