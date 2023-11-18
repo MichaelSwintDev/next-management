@@ -36,7 +36,7 @@ async function main() {
       description: "Townhouse room for upperclassmen",
       price: 700,
       image:
-        "https://images.unsplash.com/photo-1602082550187-3f954840a0f7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "https://images.unsplash.com/photo-1542906484-f6a89f408345?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
   });
 }
