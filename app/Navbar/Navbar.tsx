@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import UserMenuButton from "@/app/Navbar/UserMenuButton";
 import { getServerSession } from "next-auth";
