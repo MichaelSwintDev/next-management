@@ -1,8 +1,11 @@
 import prisma from "@/lib/db";
-import {redirect} from "next/navigation";
-import {states} from "@/types/states";
-import {$Enums} from ".prisma/client";
+import { notFound, redirect } from "next/navigation";
+import { states } from "@/@types/states";
+import { $Enums } from ".prisma/client";
 import State = $Enums.State;
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/options";
+import { Role } from "@prisma/client";
 
 export const metadata = {
   title: "Add Property",
@@ -27,24 +30,25 @@ async function addProperty(formData: FormData) {
     where: {
       name: {
         equals: city,
-        mode: 'insensitive'
-      }
-    }
-  })
+        mode: "insensitive",
+      },
+    },
+  });
 
   let newCity = await prisma.city.findFirst({
     where: {
       name: {
         equals: city,
-        mode: 'insensitive'
-      }
-    }
-  })
+        mode: "insensitive",
+      },
+    },
+  });
 
   if (newCity !== null) {
-
   } else {
-    newCity = await prisma.city.create({data: {name: city, state: state as State}});
+    newCity = await prisma.city.create({
+      data: { name: city, state: state as State },
+    });
   }
 
   const newAddress = await prisma.address.create({
@@ -52,23 +56,32 @@ async function addProperty(formData: FormData) {
       cityId: newCity.id,
       streetName: street,
       streetNumber: streetNum,
-      zipCode: zipCode
-    }
-  })
+      zipCode: zipCode,
+    },
+  });
 
   await prisma.property.create({
     data: {
       addressId: newAddress.id,
       name: name,
       type: type,
-      image: image
-    }
-  })
+      image: image,
+    },
+  });
 
   redirect("/");
 }
 
 export default async function AddPropertyPage() {
+  const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    notFound();
+  }
+  if(session.user.role !== Role.ADMIN){
+    notFound();
+  }
+
   const properties = await prisma.property.findMany();
 
   return (
@@ -82,7 +95,7 @@ export default async function AddPropertyPage() {
             placeholder={"city"}
             required
           />
-          <div className={"divider divider-horizontal"}/>
+          <div className={"divider divider-horizontal"} />
           <select
             className="select select-bordered mb-3 w-1/2 border-primary"
             required
@@ -106,14 +119,14 @@ export default async function AddPropertyPage() {
             placeholder={"Street"}
             required
           />
-          <div className={"divider divider-horizontal"}/>
+          <div className={"divider divider-horizontal"} />
           <input
             className={"input input-bordered mb-3 w-1/3 border-primary"}
             name={"streetNum"}
             placeholder={"Street #"}
             required
           />
-          <div className={"divider divider-horizontal"}/>
+          <div className={"divider divider-horizontal"} />
           <input
             className={
               "input input-bordered mb-3 w-1/3 appearance-none border-primary"
