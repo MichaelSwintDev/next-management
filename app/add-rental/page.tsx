@@ -17,6 +17,7 @@ async function addRental(formData: FormData) {
   if (!name || !propertyId || !description || !image || !price || !aptNum) {
     throw Error("Missing Required Field");
   }
+
   await prisma.rental.create({
     data: { name, propertyId, description, image, price, aptNum },
   });
