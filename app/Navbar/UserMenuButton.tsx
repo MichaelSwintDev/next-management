@@ -1,9 +1,11 @@
 "use client";
 
 import profilePicPlaceholder from "@/assets/profile-pic-placeholder.png";
+import { Role } from "@prisma/client";
 import { Session } from "next-auth";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface UserMenuButtonProps {
   session: Session | null;
@@ -45,13 +47,33 @@ export default function UserMenuButton({ session }: UserMenuButtonProps) {
       >
         <li>
           {user ? (
-            <button onClick={() => signOut({ callbackUrl: "/" })}>
+            <button
+              className="btn"
+              onClick={() => signOut({ callbackUrl: "/" })}
+            >
               Sign Out
             </button>
           ) : (
-            <button onClick={() => signIn()}>Sign In</button>
+            <button className="btn" onClick={() => signIn()}>
+              Sign In
+            </button>
           )}
         </li>
+        {user && user.role === Role.ADMIN ? (
+          <>
+            <Link href={"/applications"} className="btn">
+              Applications
+            </Link>
+            <Link href={"/add-property"} className="btn">
+              Properties
+            </Link>
+            <Link href={"/add-rental"} className="btn">
+              Rentals
+            </Link>
+          </>
+        ) : (
+          <></>
+        )}
       </ul>
     </div>
   );

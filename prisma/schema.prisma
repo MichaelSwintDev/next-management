@@ -103,24 +103,43 @@ model Property {
   addressId Int
   address   Address  @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   rental    Rental[]
+
   @@map("property")
 }
 
 model Rental {
-  id          Int      @id @default(autoincrement())
-  name        String   @db.VarChar(255)
-  aptNum      String   @db.VarChar(100)
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  aptNum      String        @db.VarChar(100)
   price       Int
   description String
   image       String
   propertyId  Int
   userId      Int?
-  property    Property @relation(fields: [propertyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_property_")
-  user        User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  property    Property      @relation(fields: [propertyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_property_")
+  user        User?         @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   ticket      Ticket[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Application Application[]
+
   @@map("rental")
+}
+
+model Application {
+  id        Int    @id @default(autoincrement())
+  userId    Int
+  rentalId  Int
+  user      User   @relation(fields: [userId], references: [id])
+  rental    Rental @relation(fields: [rentalId], references: [id])
+  firstName String
+  lastName  String
+  content   String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([userId, rentalId])
+  @@map("application")
 }
 
 model Ticket {
@@ -134,21 +153,24 @@ model Ticket {
   user        User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
   @@map("ticket")
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   name          String?
-  phone         String?   @unique @db.VarChar(30)
-  email         String   @unique
+  phone         String?       @unique @db.VarChar(30)
+  email         String        @unique
   emailVerified DateTime?
   image         String?
-  role          Role      @default(BASIC)
+  role          Role          @default(BASIC)
   rental        Rental[]
   ticket        Ticket[]
   accounts      Account[]
   sessions      Session[]
+  Application   Application[]
+
   @@map("user")
 }
 
@@ -178,6 +200,7 @@ model Session {
   userId       Int
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@map("session")
 }
 

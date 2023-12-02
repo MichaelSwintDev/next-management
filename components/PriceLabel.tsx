@@ -6,5 +6,5 @@ interface PriceLabelProps {
 }
 
 export default function PriceLabel({ price, className }: PriceLabelProps) {
-  return <span className={`badge ${className}`}>{formatPrice(price)}</span>;
+  return <span className={`badge badge-secondary ${className}`}>{formatPrice(price)}</span>;
 }
