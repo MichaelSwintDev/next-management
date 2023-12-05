@@ -26,7 +26,7 @@ export default async function ApplicationsPage({
   }
 
   const currentPage = parseInt(page);
-  const pageSize = 6;
+  const pageSize = 3;
   const totalItemCount = await prisma.application.count();
   const totalPages = Math.ceil(totalItemCount / pageSize);
 

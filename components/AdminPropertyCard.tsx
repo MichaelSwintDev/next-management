@@ -41,8 +41,8 @@ export default async function AdminPropertyCard({
             src={`${property.image}`}
             alt={property.name || "No Name"}
             width={800}
-            height={400}
-            className={"h-24 object-cover"}
+            height={600}
+            className={"h-56 object-cover"}
           ></Image>
         </figure>
       ) : (
