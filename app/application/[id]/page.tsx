@@ -53,12 +53,18 @@ export default async function ApplicationPage({
 }: ApplicationPageProps) {
   const rental = await getRental(id);
   const session = await getServerSession(authOptions);
+  const applied = await prisma.application.findFirst({
+    where: {
+      rentalId: rental.id,
+      userId: session?.user?.id,
+    },
+  });
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="">
       {!session ? (
-        <>
-          You Must
+        <div>
+          You Must{" "}
           <Link
             className={"btn-link"}
             href={{
@@ -69,8 +75,8 @@ export default async function ApplicationPage({
             Sign in
           </Link>{" "}
           to apply
-        </>
-      ) : (
+        </div>
+      ) : !applied ? (
         <div className="sm: grid grid-cols-1 gap-2 xl:grid-cols-2">
           <div className="sm: grid grid-cols-1 gap-2 xl:grid-cols-1">
             <Image
@@ -119,6 +125,8 @@ export default async function ApplicationPage({
             </form>
           </div>
         </div>
+      ) : (
+        <div>Already Applied!</div>
       )}
     </div>
   );
