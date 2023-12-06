@@ -13,7 +13,7 @@ export default function Footer() {
         </div>
       </nav>
       <aside>
-        <p>Copyright © 2023 - All right reserved by Next Management Ltd</p>
+        <p>Copyright (c) 2023 Michael Swint</p>
       </aside>
     </footer>
   );
