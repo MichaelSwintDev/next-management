@@ -13,7 +13,7 @@ export default function Footer() {
         </div>
       </nav>
       <aside>
-        <p>Copyright (c) 2023 Michael Swint</p>
+        <p className="mb-2">Copyright &copy; 2023 Michael Swint</p>
       </aside>
     </footer>
   );

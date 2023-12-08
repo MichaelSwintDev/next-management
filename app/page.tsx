@@ -26,6 +26,7 @@ export default async function Home({
     take: pageSize + (currentPage === 1 ? heroItemCount : 0),
   });
 
+
   return (
     <div className="flex flex-col items-center">
       {currentPage === 1 && (
